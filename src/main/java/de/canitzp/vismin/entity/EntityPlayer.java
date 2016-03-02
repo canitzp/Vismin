@@ -1,7 +1,7 @@
-package de.canitzp.pokemon.entity;
+package de.canitzp.vismin.entity;
 
-import de.canitzp.pokemon.renderer.Images;
-import de.canitzp.pokemon.util.*;
+import de.canitzp.vismin.renderer.Images;
+import de.canitzp.vismin.util.*;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;

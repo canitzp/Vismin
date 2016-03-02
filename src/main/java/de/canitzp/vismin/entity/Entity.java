@@ -1,8 +1,8 @@
-package de.canitzp.pokemon.entity;
+package de.canitzp.vismin.entity;
 
-import de.canitzp.pokemon.blocks.Objects;
-import de.canitzp.pokemon.util.CollisionBox;
-import de.canitzp.pokemon.util.WorldPosition;
+import de.canitzp.vismin.blocks.Objects;
+import de.canitzp.vismin.util.CollisionBox;
+import de.canitzp.vismin.util.WorldPosition;
 
 import java.awt.*;
 

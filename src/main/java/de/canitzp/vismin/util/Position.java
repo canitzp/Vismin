@@ -1,4 +1,4 @@
-package de.canitzp.pokemon.util;
+package de.canitzp.vismin.util;
 
 /**
  * @author canitzp

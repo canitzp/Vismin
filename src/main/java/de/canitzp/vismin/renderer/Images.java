@@ -1,6 +1,6 @@
-package de.canitzp.pokemon.renderer;
+package de.canitzp.vismin.renderer;
 
-import de.canitzp.pokemon.Main;
+import de.canitzp.vismin.Main;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -30,7 +30,7 @@ public class Images{
         }
         public BufferedImage getBlockImage() {
             try {
-                return ImageIO.read(Main.class.getResourceAsStream("/assets/pokemon/blocks/" + name + ".png"));
+                return ImageIO.read(Main.class.getResourceAsStream("/assets/vismin/blocks/" + name + ".png"));
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -38,7 +38,7 @@ public class Images{
         }
         public BufferedImage getItemImage() {
             try {
-                return ImageIO.read(Main.class.getResourceAsStream("/assets/pokemon/items/" + name + ".png"));
+                return ImageIO.read(Main.class.getResourceAsStream("/assets/vismin/items/" + name + ".png"));
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -46,7 +46,7 @@ public class Images{
         }
         public BufferedImage getPlayerImage() {
             try {
-                return ImageIO.read(Main.class.getResourceAsStream("/assets/pokemon/entity/player/" + name + ".png"));
+                return ImageIO.read(Main.class.getResourceAsStream("/assets/vismin/entity/player/" + name + ".png"));
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -54,7 +54,7 @@ public class Images{
         }
         public BufferedImage getImage(String folder) {
             try {
-                return ImageIO.read(Main.class.getResourceAsStream("/assets/pokemon/" + folder + "/" + name + ".png"));
+                return ImageIO.read(Main.class.getResourceAsStream("/assets/vismin/" + folder + "/" + name + ".png"));
             } catch (IOException e) {
                 e.printStackTrace();
             }

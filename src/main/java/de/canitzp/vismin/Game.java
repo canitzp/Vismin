@@ -1,9 +1,9 @@
-package de.canitzp.pokemon;
+package de.canitzp.vismin;
 
-import de.canitzp.pokemon.entity.EntityPlayer;
-import de.canitzp.pokemon.util.Keyboard;
-import de.canitzp.pokemon.util.WorldPosition;
-import de.canitzp.pokemon.world.World;
+import de.canitzp.vismin.entity.EntityPlayer;
+import de.canitzp.vismin.util.Keyboard;
+import de.canitzp.vismin.util.WorldPosition;
+import de.canitzp.vismin.world.World;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;

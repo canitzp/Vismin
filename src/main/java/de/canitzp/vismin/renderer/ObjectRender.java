@@ -1,4 +1,4 @@
-package de.canitzp.pokemon.renderer;
+package de.canitzp.vismin.renderer;
 
 /**
  * @author canitzp

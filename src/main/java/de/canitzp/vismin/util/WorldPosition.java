@@ -1,6 +1,6 @@
-package de.canitzp.pokemon.util;
+package de.canitzp.vismin.util;
 
-import de.canitzp.pokemon.world.World;
+import de.canitzp.vismin.world.World;
 
 /**
  * @author canitzp

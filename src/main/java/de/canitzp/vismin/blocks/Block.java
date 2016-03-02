@@ -1,7 +1,7 @@
-package de.canitzp.pokemon.blocks;
+package de.canitzp.vismin.blocks;
 
-import de.canitzp.pokemon.util.CollisionBox;
-import de.canitzp.pokemon.util.Position;
+import de.canitzp.vismin.util.CollisionBox;
+import de.canitzp.vismin.util.Position;
 
 /**
  * @author canitzp

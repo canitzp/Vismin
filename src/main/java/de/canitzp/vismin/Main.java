@@ -1,7 +1,7 @@
-package de.canitzp.pokemon;
+package de.canitzp.vismin;
 
-import de.canitzp.pokemon.renderer.Images;
-import de.canitzp.pokemon.util.IInitializable;
+import de.canitzp.vismin.renderer.Images;
+import de.canitzp.vismin.util.IInitializable;
 
 import javax.swing.*;
 import java.awt.*;

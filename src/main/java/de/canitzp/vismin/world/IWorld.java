@@ -1,6 +1,6 @@
-package de.canitzp.pokemon.world;
+package de.canitzp.vismin.world;
 
-import de.canitzp.pokemon.entity.EntityPlayer;
+import de.canitzp.vismin.entity.EntityPlayer;
 
 import java.awt.*;
 

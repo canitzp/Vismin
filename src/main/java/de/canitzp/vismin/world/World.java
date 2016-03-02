@@ -1,11 +1,11 @@
-package de.canitzp.pokemon.world;
+package de.canitzp.vismin.world;
 
-import de.canitzp.pokemon.blocks.Block;
-import de.canitzp.pokemon.entity.EntityPlayer;
-import de.canitzp.pokemon.renderer.Images;
-import de.canitzp.pokemon.util.CollisionBox;
-import de.canitzp.pokemon.util.ImageUtil;
-import de.canitzp.pokemon.util.Position;
+import de.canitzp.vismin.blocks.Block;
+import de.canitzp.vismin.entity.EntityPlayer;
+import de.canitzp.vismin.renderer.Images;
+import de.canitzp.vismin.util.CollisionBox;
+import de.canitzp.vismin.util.ImageUtil;
+import de.canitzp.vismin.util.Position;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
