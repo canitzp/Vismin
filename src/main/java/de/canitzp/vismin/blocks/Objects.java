@@ -8,7 +8,7 @@ import de.canitzp.vismin.util.Position;
  */
 public abstract class Objects {
 
-    protected Position position;
+    public Position position;
 
     public Objects(Position position) {
         this.position = position;

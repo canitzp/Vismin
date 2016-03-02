@@ -15,15 +15,18 @@ public class Images{
 
     public static BufferedImage player;
     public static BufferedImage worldAdvataria;
+    public static BufferedImage tree1;
 
     public static void postInit() {
         player = ImageEnum.PLAYER.getPlayerImage();
         worldAdvataria = ImageEnum.ADVATARIA.getImage("world");
+        tree1 = ImageEnum.TREE1.getBlockImage();
     }
 
     public enum ImageEnum {
         PLAYER("Player"),
-        ADVATARIA("Advataria");
+        ADVATARIA("Advataria"),
+        TREE1("tree1");
         private String name;
         ImageEnum(String name) {
             this.name = name;

@@ -13,9 +13,14 @@ import java.util.Map;
 public class ImageUtil {
 
     private static Map<Integer, BufferedImage> imageMap = new HashMap<>();
+    private static int nextRenderKey = 0;
 
     public static int getNextKey(){
-        return imageMap.size();
+        return nextRenderKey++;
+    }
+
+    private static void addToImageMap(int renderKey, BufferedImage image){
+        imageMap.put(renderKey, image);
     }
 
     public static void drawImage(Graphics graphics, BufferedImage image, Position pos){
@@ -34,7 +39,7 @@ public class ImageUtil {
             AffineTransformOp scaleOp = new AffineTransformOp(at, AffineTransformOp.TYPE_BILINEAR);
             after = scaleOp.filter(image, after);
             drawImage(graphics, after, pos);
-            imageMap.put(key, after);
+            addToImageMap(key, after);
         }
 
     }
@@ -52,7 +57,7 @@ public class ImageUtil {
             AffineTransformOp scaleOp = new AffineTransformOp(at, AffineTransformOp.TYPE_BILINEAR);
             after = scaleOp.filter(image, after);
             drawImage(graphics, after, pos);
-            imageMap.put(key, after);
+            addToImageMap(key, after);
         }
     }
 

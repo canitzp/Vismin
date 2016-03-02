@@ -28,7 +28,7 @@ public abstract class Entity extends Objects {
         World world = this.getPosition().getWorld();
         if(!world.isCollision(this.collisionMapping().add(xValue, 0))) {
             this.position = new WorldPosition(world, this.position.getX() + xValue, this.position.getY());
-            Block block = world.getBlockAtPosition(position);
+            Block block = world.getBlockAtPosition(this);
             if(block != null){
                 block.onEntityWalkOver(this);
             }
@@ -40,7 +40,7 @@ public abstract class Entity extends Objects {
         World world = this.getPosition().getWorld();
         if(!world.isCollision(this.collisionMapping().add(0, yValue))){
             this.position = new WorldPosition(world, this.position.getX(), this.position.getY() + yValue);
-            Block block = world.getBlockAtPosition(position);
+            Block block = world.getBlockAtPosition(this);
             if(block != null){
                 block.onEntityWalkOver(this);
             }

@@ -1,5 +1,6 @@
 package de.canitzp.vismin;
 
+import de.canitzp.vismin.blocks.BlockRegistry;
 import de.canitzp.vismin.entity.EntityPlayer;
 import de.canitzp.vismin.util.Keyboard;
 import de.canitzp.vismin.util.WorldPosition;
@@ -18,7 +19,9 @@ public class Game{
     public static World worldAdativa;
     public static EntityPlayer player;
 
-    public void preInit(){}
+    public void preInit(){
+        BlockRegistry.preInit();
+    }
 
     public void init(){
         //TODO
@@ -73,6 +76,7 @@ public class Game{
         if(Main.debug){
             renderDebugOverlay(graphics);
             world.renderCollisionBoxes(graphics);
+            world.renderBlockBoundingBoxes(graphics);
             player.renderCollisionBoxes(graphics);
         }
         bufferStrategy.show();
