@@ -21,7 +21,7 @@ public class World implements IWorld{
     public int width, height;
     private BufferedImage background = Images.worldAdvataria;
     private List<CollisionBox> collisionList = new ArrayList<>();
-    private List<Block> blockList = new ArrayList<>();
+    private Map<Position, Block> blockList = new HashMap<>();
 
     private int key = ImageUtil.getNextKey();
 
@@ -95,6 +95,10 @@ public class World implements IWorld{
             graphics.drawLine((int)box.getFrom().getX() + box.getWidth(), (int)box.getFrom().getY(), (int)box.getFrom().getX() + box.getWidth(), (int)box.getFrom().getY() + box.getHeight());
             graphics.drawLine((int)box.getFrom().getX(), (int)box.getFrom().getY(), (int)box.getFrom().getX(), (int)box.getFrom().getY() + box.getHeight());
         }
+    }
+
+    public Block getBlockAtPosition(Position position){
+        return blockList.get(position);
     }
 
 }

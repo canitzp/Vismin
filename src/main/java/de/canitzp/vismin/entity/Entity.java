@@ -1,8 +1,10 @@
 package de.canitzp.vismin.entity;
 
+import de.canitzp.vismin.blocks.Block;
 import de.canitzp.vismin.blocks.Objects;
 import de.canitzp.vismin.util.CollisionBox;
 import de.canitzp.vismin.util.WorldPosition;
+import de.canitzp.vismin.world.World;
 
 import java.awt.*;
 
@@ -23,15 +25,25 @@ public abstract class Entity extends Objects {
     }
 
     public Entity changeX(float xValue){
-        if(!this.position.getWorld().isCollision(this.collisionMapping().add(xValue, 0))) {
-            this.position = new WorldPosition(position.getWorld(), this.position.getX() + xValue, this.position.getY());
+        World world = this.getPosition().getWorld();
+        if(!world.isCollision(this.collisionMapping().add(xValue, 0))) {
+            this.position = new WorldPosition(world, this.position.getX() + xValue, this.position.getY());
+            Block block = world.getBlockAtPosition(position);
+            if(block != null){
+                block.onEntityWalkOver(this);
+            }
         }
         return this;
     }
 
     public Entity changeY(float yValue){
-        if(!this.position.getWorld().isCollision(this.collisionMapping().add(0, yValue))){
-            this.position = new WorldPosition(position.getWorld(), this.position.getX(), this.position.getY() + yValue);
+        World world = this.getPosition().getWorld();
+        if(!world.isCollision(this.collisionMapping().add(0, yValue))){
+            this.position = new WorldPosition(world, this.position.getX(), this.position.getY() + yValue);
+            Block block = world.getBlockAtPosition(position);
+            if(block != null){
+                block.onEntityWalkOver(this);
+            }
         }
         return this;
     }

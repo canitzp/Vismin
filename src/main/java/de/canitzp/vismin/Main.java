@@ -93,7 +93,6 @@ public class Main implements IInitializable {
             if (System.currentTimeMillis() - fpsTimer >= 1000) {
                 Main.tps = tps;
                 Main.fps = fps;
-                //if (debug) System.out.printf("FPS: %d, TPS: %d%n", fps, tps);
                 fps = 0;
                 tps = 0;
                 fpsTimer += 1000;
