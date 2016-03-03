@@ -26,6 +26,10 @@ public class CollisionBox {
         return height;
     }
 
+    public void setPosition(Position from) {
+        this.from = from;
+    }
+
     public CollisionBox add(double x, double y){
         return new CollisionBox(this.from.add(x, y), width, height);
     }

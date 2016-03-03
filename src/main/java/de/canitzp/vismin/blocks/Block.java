@@ -53,7 +53,13 @@ public class Block extends Objects {
     }
 
     public Block setPosition(Position position){
+        if(this.collisionMapping() != null) this.collisionBox.setPosition(position);
         this.position = position;
+        return this;
+    }
+
+    public Block setRenderLayer(RenderLayer layer){
+        this.layer = layer;
         return this;
     }
 

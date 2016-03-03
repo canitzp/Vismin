@@ -4,7 +4,9 @@ import de.canitzp.vismin.Main;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 
 
 /**
@@ -23,10 +25,16 @@ public class Images{
         tree1 = ImageEnum.TREE1.getBlockImage();
     }
 
+    public static InputStream getResource(String folder, String name, String type){
+        return Main.class.getResourceAsStream("/assets/vismin/" + folder + "/" + name + "." + type);
+    }
+
     public enum ImageEnum {
+
         PLAYER("Player"),
         ADVATARIA("Advataria"),
         TREE1("tree1");
+
         private String name;
         ImageEnum(String name) {
             this.name = name;

@@ -39,6 +39,9 @@ public class Game{
                 if(e.getKeyCode() == KeyEvent.VK_F3){
                     Main.debug = !Main.debug;
                 }
+                if(e.getKeyCode() == KeyEvent.VK_ESCAPE){
+                    Main.isMainMenu = true;
+                }
             }
             @Override
             public void keyReleased(KeyEvent e) {}
@@ -51,9 +54,6 @@ public class Game{
     }
 
     public void tick() {
-        if(Keyboard.isKeyDown(KeyEvent.VK_ESCAPE)){
-            Main.stop();
-        }
         player.getPosition().getWorld().onWorldTick();
         player.onPlayerTick();
     }
@@ -74,15 +74,16 @@ public class Game{
         world.renderLayer5(graphics);
         world.renderLayer6(graphics);
         if(Main.debug){
-            renderDebugOverlay(graphics);
             world.renderCollisionBoxes(graphics);
             world.renderBlockBoundingBoxes(graphics);
             player.renderCollisionBoxes(graphics);
+            renderDebugOverlay(graphics);
         }
         bufferStrategy.show();
     }
 
     private void renderDebugOverlay(Graphics graphics){
+        graphics.setColor(Color.BLACK);
         graphics.drawString("FPS:" + Main.fps + " TPS:" + Main.tps, 2, 12);
         graphics.drawString("Player Position: " + player.getPosition(), 2, 22);
     }
