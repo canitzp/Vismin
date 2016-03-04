@@ -22,7 +22,7 @@ public class Images{
     public static void postInit() {
         player = ImageEnum.PLAYER.getPlayerImage();
         worldAdvataria = ImageEnum.ADVATARIA.getImage("world");
-        tree1 = ImageEnum.TREE1.getBlockImage();
+        tree1 = ImageEnum.TREE1.getBlockImage().getImage();
     }
 
     public static InputStream getResource(String folder, String name, String type){
@@ -39,14 +39,11 @@ public class Images{
         ImageEnum(String name) {
             this.name = name;
         }
-        public BufferedImage getBlockImage() {
-            try {
-                return ImageIO.read(Main.class.getResourceAsStream("/assets/vismin/blocks/" + name + ".png"));
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            return null;
+
+        public ResourceLocation getBlockImage() {
+            return new ResourceLocation("/assets/vismin/blocks/" + name + ".png");
         }
+
         public BufferedImage getItemImage() {
             try {
                 return ImageIO.read(Main.class.getResourceAsStream("/assets/vismin/items/" + name + ".png"));

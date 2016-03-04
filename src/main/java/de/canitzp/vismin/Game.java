@@ -5,6 +5,7 @@ import de.canitzp.vismin.entity.EntityPlayer;
 import de.canitzp.vismin.util.Keyboard;
 import de.canitzp.vismin.util.WorldPosition;
 import de.canitzp.vismin.world.World;
+import de.canitzp.vismin.world.save.WorldSaveData;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
@@ -40,6 +41,7 @@ public class Game{
                     Main.debug = !Main.debug;
                 }
                 if(e.getKeyCode() == KeyEvent.VK_ESCAPE){
+                    WorldSaveData.saveWorld(worldAdativa);
                     Main.isMainMenu = true;
                 }
             }

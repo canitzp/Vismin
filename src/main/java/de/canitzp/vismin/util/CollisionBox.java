@@ -1,12 +1,20 @@
 package de.canitzp.vismin.util;
 
+import de.canitzp.vismin.world.save.ISaveable;
+import de.canitzp.vismin.world.save.ReadStream;
+import de.canitzp.vismin.world.save.WriteStream;
+
+import java.io.Serializable;
+
 /**
  * @author canitzp
  */
-public class CollisionBox {
+public class CollisionBox implements Serializable, ISaveable{
 
     public Position from;
     public int width, height;
+
+    private CollisionBox(){}
 
     public CollisionBox(Position from, int width, int height) {
         this.from = from;
@@ -57,4 +65,24 @@ public class CollisionBox {
         return false;
     }
 
+    @Override
+    public WriteStream saveToFile(WriteStream saveStream) {
+        saveStream.saveInteger(width).saveInteger(height);
+        saveStream.savePosition(from);
+        return saveStream;
+    }
+
+    @Override
+    public ReadStream readFromFile(ReadStream readStream) {
+        this.width = readStream.getInteger();
+        this.height = readStream.getInteger();
+        this.from = readStream.getPosition();
+        return readStream;
+    }
+
+    public static CollisionBox getCollisionBoxFromFile(ReadStream read){
+        CollisionBox box = new CollisionBox();
+        box.readFromFile(read);
+        return box;
+    }
 }

@@ -1,7 +1,9 @@
 package de.canitzp.vismin.renderer.gui;
 
+import de.canitzp.vismin.Game;
 import de.canitzp.vismin.Main;
 import de.canitzp.vismin.util.Position;
+import de.canitzp.vismin.world.save.WorldSaveData;
 
 import java.awt.*;
 
@@ -15,14 +17,26 @@ public class GuiMainMenu extends GuiScreen{
     public GuiMainMenu(int width, int height){
         this.width = width;
         this.height = height;
-        addButton(new GuiButton(100, 110, 300, 100, "Start"){
+        addButton(new GuiButton(100, 110, 400, 100, "Start"){
             @Override
             public boolean onClicked(Position position) {
                 Main.isMainMenu = false;
                 return true;
             }
         });
-        addButton(new GuiButton(100, 510, 300, 100, "Exit"){
+        addButton(new GuiButton(100, 310, 400, 100, "World-Editor"){
+            @Override
+            public boolean onClicked(Position position) {
+                WorldSaveData.readWorld(Game.worldAdativa);
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                return true;
+            }
+        });
+        addButton(new GuiButton(100, 510, 400, 100, "Exit"){
             @Override
             public boolean onClicked(Position position) {
                 Main.stop();

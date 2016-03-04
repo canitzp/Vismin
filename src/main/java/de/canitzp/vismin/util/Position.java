@@ -1,9 +1,11 @@
 package de.canitzp.vismin.util;
 
+import java.io.Serializable;
+
 /**
  * @author canitzp
  */
-public class Position {
+public class Position implements Serializable{
 
     public double x, y;
 

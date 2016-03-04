@@ -12,6 +12,7 @@ public class GuiButton extends Gui {
 
     public int x, y, width, height;
     public String text;
+    public Font font;
 
     public GuiButton(int x, int y, int width, int height, String text) {
         this.x = x;
@@ -19,6 +20,7 @@ public class GuiButton extends Gui {
         this.width = width;
         this.height = height;
         this.text = text;
+        this.font = RenderManager.lumberjack.deriveFont(Font.PLAIN, 72);
     }
 
     public void render(Graphics graphics){
@@ -27,8 +29,13 @@ public class GuiButton extends Gui {
         graphics.drawLine(x, y + height, x + width, y + height);
         graphics.drawLine(x + width, y, x + width, y + height);
         graphics.drawLine(x, y, x, y + height);
-        graphics.setFont(RenderManager.lumberjack.deriveFont(Font.PLAIN, 72));
+        graphics.setFont(font);
         graphics.drawString(text, x + width/2 - graphics.getFontMetrics().stringWidth(text)/2, y + (height/2 + graphics.getFontMetrics().getHeight()/4));
+    }
+
+    public GuiButton setTextSize(int size){
+        this.font.deriveFont(this.font.getStyle(), size);
+        return this;
     }
 
     public boolean onClicked(Position position){

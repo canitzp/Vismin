@@ -8,22 +8,25 @@ import de.canitzp.vismin.renderer.Images;
 import de.canitzp.vismin.util.CollisionBox;
 import de.canitzp.vismin.util.ImageUtil;
 import de.canitzp.vismin.util.Position;
+import de.canitzp.vismin.world.save.ReadStream;
+import de.canitzp.vismin.world.save.WriteStream;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.Serializable;
 import java.util.*;
 import java.util.List;
 
 /**
  * @author canitzp
  */
-public class World{
+public class World implements Serializable{
 
     public String uniqueWorldIdentifier;
     public int width, height;
     private BufferedImage background = Images.worldAdvataria;
     private List<CollisionBox> collisionList = new ArrayList<>();
-    private Map<Position, Block> blockList = new HashMap<>();
+    public Map<Position, Block> blockList = new HashMap<>();
 
     private int renderKey;
 
@@ -37,6 +40,34 @@ public class World{
         this.addCollisionAt(new Position(0, height - 1), width, 1);
         this.addCollisionAt(new Position(width - 1, 0), 1, height);
         this.addBlockToWorld(new Position(100, 100), BlockRegistry.tree1);
+        this.addBlockToWorld(new Position(100, 200), BlockRegistry.tree1.setNoCollision());
+    }
+
+    public WriteStream getSavedWorld(WriteStream write){
+        for(Block block : blockList.values()){
+            if(block != null)
+                write = block.saveToFile(write);
+        }
+        for(CollisionBox box : collisionList){
+            if(box != null)
+                write = box.saveToFile(write);
+        }
+        //saveMap.put("uniqueWorldIdentifier", uniqueWorldIdentifier);
+        //saveMap.put("width", width);
+        //saveMap.put("height", height);
+        //saveMap.put("collisionBoxes", collisionList);
+        return write;
+    }
+
+    public void readSavedWorld(ReadStream read){
+        Map<String, Object> map = (Map<String, Object>) read.getObject();
+        while(map != null && map.containsKey("MAP") && map.containsValue("BLOCK")){
+            Block block = Block.getBlockFromMap(map);
+            this.addBlockToWorld(block.position, block);
+            map = (Map<String, Object>) read.getObject();
+            System.out.println(block.toString());
+        }
+        System.out.println("ende");
     }
 
     public World setBackground(BufferedImage image){
