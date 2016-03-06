@@ -1,5 +1,6 @@
 package de.canitzp.vismin.entity;
 
+import de.canitzp.vismin.Game;
 import de.canitzp.vismin.renderer.Images;
 import de.canitzp.vismin.util.*;
 

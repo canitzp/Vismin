@@ -24,6 +24,11 @@ public class GuiButton extends Gui {
     }
 
     public void render(Graphics graphics){
+        this.render(graphics, new Position(0, 0));
+    }
+    public void render(Graphics graphics, Position position){
+        int x = (int) (this.x + position.getX());
+        int y = (int) (this.y + position.getY());
         graphics.setColor(Color.BLACK);
         graphics.drawLine(x, y, x + width, y);
         graphics.drawLine(x, y + height, x + width, y + height);
@@ -33,8 +38,8 @@ public class GuiButton extends Gui {
         graphics.drawString(text, x + width/2 - graphics.getFontMetrics().stringWidth(text)/2, y + (height/2 + graphics.getFontMetrics().getHeight()/4));
     }
 
-    public GuiButton setTextSize(int size){
-        this.font.deriveFont(this.font.getStyle(), size);
+    public GuiButton setFont(Font font){
+        this.font = font;
         return this;
     }
 

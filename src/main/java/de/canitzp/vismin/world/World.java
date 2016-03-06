@@ -1,10 +1,13 @@
 package de.canitzp.vismin.world;
 
+import de.canitzp.vismin.Main;
 import de.canitzp.vismin.blocks.Block;
 import de.canitzp.vismin.blocks.BlockRegistry;
 import de.canitzp.vismin.entity.Entity;
 import de.canitzp.vismin.entity.EntityPlayer;
 import de.canitzp.vismin.renderer.Images;
+import de.canitzp.vismin.renderer.ResourceLocation;
+import de.canitzp.vismin.renderer.gui.Gui;
 import de.canitzp.vismin.util.CollisionBox;
 import de.canitzp.vismin.util.ImageUtil;
 import de.canitzp.vismin.util.Position;
@@ -24,9 +27,10 @@ public class World implements Serializable{
 
     public String uniqueWorldIdentifier;
     public int width, height;
-    private BufferedImage background = Images.worldAdvataria;
+    private ResourceLocation location;
+    private BufferedImage background;
     private List<CollisionBox> collisionList = new ArrayList<>();
-    public Map<Position, Block> blockList = new HashMap<>();
+    public List<Block> blockList = new ArrayList<>();
 
     private int renderKey;
 
@@ -35,16 +39,27 @@ public class World implements Serializable{
         this.width = width;
         this.height = height;
         this.renderKey = ImageUtil.getNextKey();
+        setBackground(Images.ImageEnum.ADVATARIA);
         this.addCollisionAt(new Position(0, -1), width, 1);
         this.addCollisionAt(new Position(-1, 0), 1, height);
         this.addCollisionAt(new Position(0, height - 1), width, 1);
         this.addCollisionAt(new Position(width - 1, 0), 1, height);
         this.addBlockToWorld(new Position(100, 100), BlockRegistry.tree1);
-        this.addBlockToWorld(new Position(100, 200), BlockRegistry.tree1.setNoCollision());
+        this.addBlockToWorld(new Position(100, 200), BlockRegistry.telepad);
+    }
+
+    public World setBackground(Images.ImageEnum resource){
+        this.location = resource.getGenericImage("world");
+        this.background = this.location.getImage();
+        return this;
     }
 
     public WriteStream getSavedWorld(WriteStream write){
-        for(Block block : blockList.values()){
+        write.saveObject(uniqueWorldIdentifier);
+        write.saveInteger(width);
+        write.saveInteger(height);
+        write = location.saveToFile(write);
+        for(Block block : blockList){
             if(block != null)
                 write = block.saveToFile(write);
         }
@@ -52,39 +67,44 @@ public class World implements Serializable{
             if(box != null)
                 write = box.saveToFile(write);
         }
-        //saveMap.put("uniqueWorldIdentifier", uniqueWorldIdentifier);
-        //saveMap.put("width", width);
-        //saveMap.put("height", height);
-        //saveMap.put("collisionBoxes", collisionList);
         return write;
     }
 
     public void readSavedWorld(ReadStream read){
+        uniqueWorldIdentifier = (String) read.getObject();
+        width = read.getInteger();
+        height = read.getInteger();
+        location.readFromFile(read);
         Map<String, Object> map = (Map<String, Object>) read.getObject();
         while(map != null && map.containsKey("MAP") && map.containsValue("BLOCK")){
             Block block = Block.getBlockFromMap(map);
             this.addBlockToWorld(block.position, block);
             map = (Map<String, Object>) read.getObject();
-            System.out.println(block.toString());
         }
-        System.out.println("ende");
-    }
-
-    public World setBackground(BufferedImage image){
-        this.background = image;
-        return this;
     }
 
     public void onWorldTick() {
 
     }
 
+    public void renderHoleWorld(Graphics graphics, EntityPlayer player){
+        renderLayer2(graphics);
+        renderLayer3(graphics);
+        renderPlayer(graphics, player);
+        renderLayer5(graphics);
+        renderLayer6(graphics);
+    }
+
     public void renderWorld(Graphics graphics) {
-        ImageUtil.drawImageScaledTo(graphics, renderKey, background, new Position(0, 0), 1280, 720);
+        renderWorld(new Position(0, 0), graphics);
+    }
+
+    public void renderWorld(Position position, Graphics graphics) {
+        ImageUtil.drawImageScaledTo(graphics, renderKey, background, position, width, height);
     }
 
     public void renderLayer2(Graphics graphics) {
-        for(Block block : this.blockList.values()){
+        for(Block block : this.blockList){
             if(block.layer == Block.RenderLayer.LAYER2){
                 block.renderBlock(graphics);
             }
@@ -92,7 +112,7 @@ public class World implements Serializable{
     }
 
     public void renderLayer3(Graphics graphics) {
-        for(Block block : this.blockList.values()){
+        for(Block block : this.blockList){
             if(block.layer == Block.RenderLayer.LAYER3){
                 block.renderBlock(graphics);
             }
@@ -104,7 +124,7 @@ public class World implements Serializable{
     }
 
     public void renderLayer5(Graphics graphics) {
-        for(Block block : this.blockList.values()){
+        for(Block block : this.blockList){
             if(block.layer == Block.RenderLayer.LAYER5){
                 block.renderBlock(graphics);
             }
@@ -112,7 +132,7 @@ public class World implements Serializable{
     }
 
     public void renderLayer6(Graphics graphics) {
-        for(Block block : this.blockList.values()){
+        for(Block block : this.blockList){
             if(block.layer == Block.RenderLayer.LAYER6){
                 block.renderBlock(graphics);
             }
@@ -134,23 +154,32 @@ public class World implements Serializable{
     }
 
     public void renderCollisionBoxes(Graphics graphics){
+       renderCollisionBoxes(graphics, new Position(0, 0));
+    }
+
+    public void renderCollisionBoxes(Graphics graphics, Position offset){
         graphics.setColor(Color.RED);
         for(CollisionBox box : this.collisionList){
             if(box != null){
-                graphics.drawLine((int)box.getFrom().getX(), (int)box.getFrom().getY(), (int)box.getFrom().getX() + box.getWidth(), (int)box.getFrom().getY());
-                graphics.drawLine((int)box.getFrom().getX(), (int)box.getFrom().getY() + box.getHeight(), (int)box.getFrom().getX() + box.getWidth(), (int)box.getFrom().getY() + box.getHeight());
-                graphics.drawLine((int)box.getFrom().getX() + box.getWidth(), (int)box.getFrom().getY(), (int)box.getFrom().getX() + box.getWidth(), (int)box.getFrom().getY() + box.getHeight());
-                graphics.drawLine((int)box.getFrom().getX(), (int)box.getFrom().getY(), (int)box.getFrom().getX(), (int)box.getFrom().getY() + box.getHeight());
+                Position pos = box.getFrom().add(offset.getX(), offset.getY());
+                graphics.drawLine((int)pos.getX(), (int)pos.getY(), (int)pos.getX() + box.getWidth(), (int)pos.getY());
+                graphics.drawLine((int)pos.getX(), (int)pos.getY() + box.getHeight(), (int)pos.getX() + box.getWidth(), (int)pos.getY() + box.getHeight());
+                graphics.drawLine((int)pos.getX() + box.getWidth(), (int)pos.getY(), (int)pos.getX() + box.getWidth(), (int)pos.getY() + box.getHeight());
+                graphics.drawLine((int)pos.getX(), (int)pos.getY(), (int)pos.getX(), (int)pos.getY() + box.getHeight());
             }
         }
     }
 
     public void renderBlockBoundingBoxes(Graphics graphics){
-        for(Block block : this.blockList.values()){
+        renderBlockBoundingBoxes(graphics, new Position(0, 0));
+    }
+
+    public void renderBlockBoundingBoxes(Graphics graphics, Position position){
+        for(Block block : this.blockList){
             if(block != null){
                 graphics.setColor(block.collisionMapping() != null ? new Color(128, 0, 128) : Color.BLUE);
-                int x = (int) block.position.getX();
-                int y = (int) block.position.getY();
+                int x = (int) ((int) block.position.getX() + position.getX());
+                int y = (int) ((int) block.position.getY() + position.getY());
                 graphics.drawLine(x, y, x + block.width, y);
                 graphics.drawLine(x, y + block.height, x + block.width, y + block.height);
                 graphics.drawLine(x + block.width, y, x + block.width, y + block.height);
@@ -160,15 +189,47 @@ public class World implements Serializable{
     }
 
     public void addBlockToWorld(Position position, Block block){
-        this.addCollisionAt(block.collisionMapping());
-        this.blockList.put(position, block.setPosition(position));
+        if(block != null){
+            block.setPosition(position);
+            Block b = block.cloneBlock();
+            this.addCollisionAt(b.collisionMapping());
+            this.blockList.add(b);
+        }
+    }
+
+    public void deleteBlockFromWorld(Position position){
+        Block block = getBlockAtPosition(position);
+        this.blockList.remove(block);
+        this.collisionList.remove(getCollisionBoxAtPosition(position));
     }
 
     public Block getBlockAtPosition(Entity entity){
-        for(Block block : this.blockList.values()){
+        for(Block block : this.blockList){
             Position position = entity.getPosition().add(0, 10);
             if(position.getX() + (entity.collisionMapping().getWidth()/2) >= block.position.getX() && position.getX() + (entity.collisionMapping().getWidth()/2) <= block.position.getX() + block.width){
                 if(position.getY() >= block.position.getY() && position.getY() <= block.position.getY() + block.height){
+                    return block;
+                }
+            }
+        }
+        return null;
+    }
+
+    public Block getBlockAtPosition(Position position){
+        for(Block block : this.blockList){
+            if(position.getX() >= block.position.getX() && position.getX() <= block.position.getX() + block.width){
+                if(position.getY() >= block.position.getY() && position.getY() <= block.position.getY() + block.height){
+                    return block;
+                }
+            }
+        }
+        return null;
+    }
+
+    public CollisionBox getCollisionBoxAtPosition(Position position){
+        for(CollisionBox block : this.collisionList){
+            if(position.getX() >= block.getFrom().getX() && position.getX() <= block.getFrom().getX() + block.width){
+                if(position.getY() >= block.getFrom().getY() && position.getY() <= block.getFrom().getY() + block.height){
                     return block;
                 }
             }

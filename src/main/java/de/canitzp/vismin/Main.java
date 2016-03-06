@@ -2,40 +2,41 @@ package de.canitzp.vismin;
 
 import de.canitzp.vismin.renderer.Images;
 import de.canitzp.vismin.renderer.RenderManager;
-import de.canitzp.vismin.renderer.gui.GuiButton;
-import de.canitzp.vismin.renderer.gui.GuiMainMenu;
-import de.canitzp.vismin.util.IInitializable;
+import de.canitzp.vismin.renderer.gui.GuiHandler;
 import de.canitzp.vismin.util.Mouse;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyListener;
-import java.awt.event.MouseEvent;
+import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.File;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 
 /**
  * @author canitzp
  */
-public class Main implements IInitializable {
+public class Main {
 
     public static JFrame frame;
     public static final String TITLE = "Vismin";
     public static final int FPS = 60, TPS = 60, WIDTH = 1280, HEIGHT = 720;
     public static int fps = 0, tps = 0;
-    public static boolean isRunning = true, debug = false, isMainMenu = true;
+    public static boolean isRunning = true, debug = false, pause = false;
     public static KeyListener keyListener;
 
     public static Main instance;
     public static Game gameInstance;
-    private static GuiMainMenu mainMenu;
+    public static GuiHandler guiHandler;
 
     public static void main(String[] args) {
         instance = new Main();
         gameInstance = new Game();
+        guiHandler = new GuiHandler();
         instance.preInit();
     }
 
-    @Override
     public void preInit() {
         frame = new JFrame(TITLE);
         frame.setResizable(false);
@@ -52,27 +53,20 @@ public class Main implements IInitializable {
         init();
     }
 
-    @Override
     public void init() {
         gameInstance.init();
         postInit();
     }
 
-    @Override
     public void postInit() {
         gameInstance.postInit();
+        guiHandler.postInitGui();
         menu();
-    }
-
-    @Override
-    public void onGameStarts() {
-        gameInstance.onGameStarts();
     }
 
     public void menu() {
         frame.addMouseMotionListener(new Mouse.FrameMove());
         frame.addMouseListener(new Mouse());
-        mainMenu = new GuiMainMenu(WIDTH, HEIGHT);
         gameloop();
     }
 
@@ -113,27 +107,55 @@ public class Main implements IInitializable {
     }
 
     private void render(){
-        Graphics graphics = frame.getGraphics();
-        if(isMainMenu){
-            mainMenu.render(graphics);
-            graphics.setColor(Color.BLACK);
-            graphics.setFont(new Font(null, Font.PLAIN, 18));
-            graphics.drawLine(0, 40, WIDTH, 40);
-        } else {
-            gameInstance.render();
+        if(!pause){
+            try {
+                gameInstance.render();
+            } catch (Exception e){
+                e.printStackTrace();
+                trowAlert("A Error occured while rendering something. Now I'm sad :(", e);
+            }
         }
     }
 
     private void tick(){
-        if(isMainMenu){
-            mainMenu.tick();
-        } else {
-            gameInstance.tick();
+        if(!pause){
+            if(guiHandler.isActive()){
+                guiHandler.tickGui();
+            } else {
+                gameInstance.tick();
+            }
         }
     }
 
     public static void stop() {
         isRunning = false;
+    }
+
+    public static void trowAlert(String alert, Exception e){
+        pause = true;
+        JFrame frame = new JFrame("Error");
+        frame.setSize(new Dimension(640, 480));
+        JTextArea text = new JTextArea();
+        text.append(alert + "\r\n");
+        StringWriter writer = new StringWriter();
+        e.printStackTrace(new PrintWriter(writer));
+        text.append(writer.toString());
+        frame.add(text);
+        frame.addWindowListener(new WindowAdapter() {
+            /**
+             * Invoked when a window is in the process of being closed.
+             * The close operation can be overridden at this point.
+             *
+             * @param e
+             */
+            @Override
+            public void windowClosing(WindowEvent e) {
+                pause = false;
+                guiHandler.setActiveGui("GuiMainMenu");
+            }
+        });
+        frame.setLocationRelativeTo(null);
+        frame.setVisible(true);
     }
 
 }

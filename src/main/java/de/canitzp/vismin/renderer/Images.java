@@ -17,12 +17,13 @@ public class Images{
 
     public static BufferedImage player;
     public static BufferedImage worldAdvataria;
-    public static BufferedImage tree1;
+    public static BufferedImage tree1, telepad;
 
     public static void postInit() {
         player = ImageEnum.PLAYER.getPlayerImage();
         worldAdvataria = ImageEnum.ADVATARIA.getImage("world");
         tree1 = ImageEnum.TREE1.getBlockImage().getImage();
+        telepad = ImageEnum.TELEPAD.getBlockImage().getImage();
     }
 
     public static InputStream getResource(String folder, String name, String type){
@@ -33,7 +34,8 @@ public class Images{
 
         PLAYER("Player"),
         ADVATARIA("Advataria"),
-        TREE1("tree1");
+        TREE1("tree1"),
+        TELEPAD("telepad");
 
         private String name;
         ImageEnum(String name) {
@@ -42,6 +44,9 @@ public class Images{
 
         public ResourceLocation getBlockImage() {
             return new ResourceLocation("/assets/vismin/blocks/" + name + ".png");
+        }
+        public ResourceLocation getGenericImage(String folder) {
+            return new ResourceLocation("/assets/vismin/" + folder + "/" + name + ".png");
         }
 
         public BufferedImage getItemImage() {

@@ -35,10 +35,6 @@ public class WorldSaveData {
             ReadStream stream = new ReadStream(new FileInputStream(worldSave));
             world.readSavedWorld(stream);
             stream.close();
-            //ObjectInputStream ois = new ObjectInputStream(new FileInputStream(worldSave));
-            //Map<String, Object> world1 = (Map) ois.readObject();
-            //ois.close();
-            //world.readSavedWorld(world1);
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -72,7 +72,6 @@ public class CollisionBox implements Serializable, ISaveable{
         return saveStream;
     }
 
-    @Override
     public ReadStream readFromFile(ReadStream readStream) {
         this.width = readStream.getInteger();
         this.height = readStream.getInteger();
@@ -84,5 +83,9 @@ public class CollisionBox implements Serializable, ISaveable{
         CollisionBox box = new CollisionBox();
         box.readFromFile(read);
         return box;
+    }
+
+    public CollisionBox cloneCollisionBox(){
+        return new CollisionBox(from, width, height);
     }
 }

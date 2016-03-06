@@ -7,6 +7,4 @@ public interface ISaveable {
 
     WriteStream saveToFile(WriteStream saveStream);
 
-    ReadStream readFromFile(ReadStream readStream);
-
 }

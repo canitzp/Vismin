@@ -2,6 +2,7 @@ package de.canitzp.vismin.util;
 
 import de.canitzp.vismin.Main;
 import de.canitzp.vismin.renderer.gui.Gui;
+import de.canitzp.vismin.renderer.gui.GuiHandler;
 
 import java.awt.*;
 import java.awt.event.MouseEvent;
@@ -41,6 +42,9 @@ public class Mouse implements MouseListener{
         keys[e.getButton()] = e.getLocationOnScreen();
         mouseX = e.getX();
         mouseY = e.getY();
+        if(Main.guiHandler.isActive()){
+            Main.guiHandler.activeGui.onMousePressed(e);
+        }
     }
 
     /**
@@ -51,6 +55,9 @@ public class Mouse implements MouseListener{
     @Override
     public void mouseReleased(MouseEvent e) {
         keys[e.getButton()] = null;
+        if(Main.guiHandler.isActive()){
+            Main.guiHandler.activeGui.onMouseReleased(e);
+        }
     }
 
     /**
@@ -91,27 +98,8 @@ public class Mouse implements MouseListener{
          */
         @Override
         public void mouseDragged(MouseEvent e) {
-            if(Main.isMainMenu){
-                Point point = e.getPoint();
-                if(e.getLocationOnScreen().getX() - Gui.mathX >= 0 && e.getLocationOnScreen().getX() - Gui.mathX <= Main.WIDTH){
-                    if(e.getLocationOnScreen().getY() - Gui.mathY <= 40 && e.getLocationOnScreen().getY() - Gui.mathY >= 0){
-                        if(mouseX != 0){
-                            double mouseX = point.getX();
-                            double mouseY = point.getY();
-                            Point oldFrame = Main.frame.getLocation();
-                            if(oldFrame.getX() + Main.WIDTH > Toolkit.getDefaultToolkit().getScreenSize().getWidth() && Mouse.mouseX < mouseX) return;
-                            if(oldFrame.getX() < 0 && Mouse.mouseX > mouseX) return;
-                            if(oldFrame.getY() + Main.HEIGHT > Toolkit.getDefaultToolkit().getScreenSize().getHeight() && Mouse.mouseY < mouseY) return;
-                            if(oldFrame.getY() < 0 && Mouse.mouseY > mouseY) return;
-                            if(Mouse.mouseX != mouseX || Mouse.mouseY != mouseY){
-                                Main.frame.setLocation((int) (oldFrame.getX() - (Mouse.mouseX - mouseX)), (int) (oldFrame.getY() - (Mouse.mouseY - mouseY)));
-                            }
-                        } else {
-                            Mouse.mouseX = point.getX();
-                            Mouse.mouseY = point.getY();
-                        }
-                    }
-                }
+            if(Main.guiHandler.isActive()){
+                Main.guiHandler.activeGui.onMouseDragged(e);
             }
         }
 
@@ -123,7 +111,9 @@ public class Mouse implements MouseListener{
          */
         @Override
         public void mouseMoved(MouseEvent e) {
-
+            if(Main.guiHandler.isActive()){
+                Main.guiHandler.activeGui.onMouseMove(e);
+            }
         }
     }
 }

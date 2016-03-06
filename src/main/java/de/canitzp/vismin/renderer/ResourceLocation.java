@@ -39,14 +39,14 @@ public class ResourceLocation implements ISaveable, Serializable {
 
     @Override
     public WriteStream saveToFile(WriteStream saveStream) {
-        saveStream.saveString(location);
+        saveStream.saveObject(location);
         return saveStream;
     }
 
-    @Override
     public ReadStream readFromFile(ReadStream readStream) {
-        this.location = readStream.getString();
+        this.location = (String) readStream.getObject();
         return readStream;
     }
+
 
 }

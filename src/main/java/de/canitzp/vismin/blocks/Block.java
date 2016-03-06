@@ -19,49 +19,59 @@ import java.util.Map;
 /**
  * @author canitzp
  */
-public class Block extends Objects implements Serializable, ISaveable{
+public class Block implements ISaveable{
 
+    public Position position;
     public int width, height;
     public String registryName;
     public RenderLayer layer;
     private CollisionBox collisionBox;
     private int key;
-    private ResourceLocation background;
+    private ResourceLocation location;
     private BufferedImage image;
 
-    public Block(){}
+    private Block(){}
 
     public Block(int width, int height, RenderLayer layer) {
-        super(null);
         this.width = width;
         this.height = height;
         this.layer = layer;
         this.key = ImageUtil.getNextKey();
         this.collisionBox = new CollisionBox(position, width, height);
-        this.background = Images.ImageEnum.TREE1.getBlockImage();
-        this.image = this.background.getImage();
+        setLocation(Images.ImageEnum.TREE1);
     }
-
 
     @Override
     public String toString() {
-        return "Width:" + width + " Height:" + height + " RegistryName:" + registryName + " ResourceLocation:" + background + " " + position.toString();
+        return "Width:" + width + " Height:" + height + " RegistryName:" + registryName + " ResourceLocation:" + location + " " + position.toString();
     }
 
     public void renderBlock(Graphics graphics){
         ImageUtil.drawImageScaledTo(graphics, key, image, position, width, height);
     }
-
-    public ResourceLocation getBackground() {
-        return background;
+    public void renderBlock(Graphics graphics, Position position){
+        ImageUtil.drawImageScaledTo(graphics, key, image, position, width, height);
     }
 
-    public void setBackground(ResourceLocation background) {
-        this.background = background;
-        this.image = this.background.getImage();
+    public ResourceLocation getLocation() {
+        return location;
     }
 
-    @Override
+    public Block setLocation(Images.ImageEnum resource) {
+        return this.setLocation(resource.getBlockImage());
+    }
+
+    public Block setLocation(ResourceLocation resource) {
+        this.location = resource;
+        this.image = this.location.getImage();
+        return this;
+    }
+
+    public Block setCollisionBox(CollisionBox collisionBox){
+        if(collisionBox != null) this.collisionBox = collisionBox.cloneCollisionBox();
+        return this;
+    }
+
     public CollisionBox collisionMapping() {
         return collisionBox;
     }
@@ -76,19 +86,21 @@ public class Block extends Objects implements Serializable, ISaveable{
         return this;
     }
 
-    public Block setPosition(double x, double y){
-        this.setPosition(new Position(x, y));
-        return this;
-    }
-
     public Block setPosition(Position position){
-        if(this.collisionMapping() != null) this.collisionBox.setPosition(position);
+        if(this.collisionMapping() != null){
+            this.collisionBox.setPosition(position);
+        }
         this.position = position;
         return this;
     }
 
     public Block setRenderLayer(RenderLayer layer){
         this.layer = layer;
+        return this;
+    }
+
+    public Block setNewRenderKey(){
+        this.key = ImageUtil.getNextKey();
         return this;
     }
 
@@ -104,21 +116,9 @@ public class Block extends Objects implements Serializable, ISaveable{
         map.put("RegistryName", registryName);
         map.put("RenderLayer", layer);
         map.put("CollisionBox", collisionBox);
-        map.put("ResourceLocation", background);
+        map.put("ResourceLocation", location);
         saveStream.saveObject(map);
         return saveStream;
-    }
-
-    @Override
-    public ReadStream readFromFile(ReadStream readStream) {
-        /*this.position = readStream.getPosition();
-        this.width = readStream.getInteger();
-        this.height = readStream.getInteger();
-        this.registryName = readStream.getString();
-        this.layer = (RenderLayer) readStream.getObject();
-        this.collisionBox = CollisionBox.getCollisionBoxFromFile(readStream);
-        this.background = ResourceLocation.getResourceLocationFromFile(readStream);*/
-        return readStream;
     }
 
     public static Block getBlockFromMap(Map<String, Object> map){
@@ -129,8 +129,12 @@ public class Block extends Objects implements Serializable, ISaveable{
         block.registryName = (String) map.get("RegistryName");
         block.layer = (RenderLayer) map.get("RenderLayer");
         block.collisionBox = (CollisionBox) map.get("CollisionBox");
-        block.background = (ResourceLocation) map.get("ResourceLocation");
+        block.location = (ResourceLocation) map.get("ResourceLocation");
         return block;
+    }
+
+    public Block cloneBlock(){
+        return new Block(width, height, layer).setRegistryName(registryName).setPosition(position).setLocation(getLocation()).setCollisionBox(collisionMapping()).setNewRenderKey();
     }
 
 

@@ -15,31 +15,19 @@ public class Gui{
     public static double mathX = Main.frame.getLocation().getX();
     public static double mathY = Main.frame.getLocation().getY();
 
-    public void waitForMouseInput(){
-        boolean hasEnd = false;
-        while (!hasEnd){
-            hasEnd = checkMouseInput();
-            try {
-                Thread.sleep(100);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
     public boolean checkMouseInput() {
         mathX = Main.frame.getLocation().getX();
         mathY = Main.frame.getLocation().getY();
         Point point = Mouse.getMouseClicked(MouseEvent.BUTTON1);
         if (point != null) {
-            return onMouseRightClick(new Position(point.getX() - mathX, point.getY() - mathY));
+            return onMouseLeftClick(new Position(point.getX() - mathX, point.getY() - mathY));
         }
         point = Mouse.getMouseClicked(MouseEvent.BUTTON2);
         if (point != null) {
-            return onMouseScrollWheelClick(new Position(point.getX(), point.getY()));
+            return onMouseScrollWheelClick(new Position(point.getX() - mathX, point.getY() - mathY));
         }
         point = Mouse.getMouseClicked(MouseEvent.BUTTON3);
-        return point != null && onMouseLeftClick(new Position(point.getX(), point.getY()));
+        return point != null && onMouseRightClick(new Position(point.getX() - mathX, point.getY() - mathY));
     }
 
     public boolean onMouseRightClick(Position position){
@@ -53,5 +41,13 @@ public class Gui{
     public boolean onMouseLeftClick(Position position){
         return false;
     }
+
+    public void onMousePressed(MouseEvent e){}
+
+    public void onMouseDragged(MouseEvent event){}
+
+    public void onMouseReleased(MouseEvent event){}
+
+    public void onMouseMove(MouseEvent event){}
 
 }

@@ -53,7 +53,6 @@ public class ImageUtil {
             BufferedImage after = new BufferedImage(Math.round(width), Math.round(height), BufferedImage.TYPE_INT_ARGB);
             AffineTransform at = new AffineTransform();
             at.scale(width/w, height/h);
-            System.out.println(width/w + " " +  height/h);
             AffineTransformOp scaleOp = new AffineTransformOp(at, AffineTransformOp.TYPE_BILINEAR);
             after = scaleOp.filter(image, after);
             drawImage(graphics, after, pos);

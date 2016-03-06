@@ -2,6 +2,7 @@ package de.canitzp.vismin;
 
 import de.canitzp.vismin.blocks.BlockRegistry;
 import de.canitzp.vismin.entity.EntityPlayer;
+import de.canitzp.vismin.renderer.gui.GuiHandler;
 import de.canitzp.vismin.util.Keyboard;
 import de.canitzp.vismin.util.WorldPosition;
 import de.canitzp.vismin.world.World;
@@ -41,8 +42,8 @@ public class Game{
                     Main.debug = !Main.debug;
                 }
                 if(e.getKeyCode() == KeyEvent.VK_ESCAPE){
-                    WorldSaveData.saveWorld(worldAdativa);
-                    Main.isMainMenu = true;
+                    if(!Keyboard.isKeyDown(KeyEvent.VK_SHIFT)) WorldSaveData.saveWorld(worldAdativa);
+                    Main.guiHandler.setActiveGui("GuiMainMenu");
                 }
             }
             @Override
@@ -69,22 +70,25 @@ public class Game{
         }
         World world = player.getPosition().getWorld();
         Graphics graphics = bufferStrategy.getDrawGraphics();
-        world.renderWorld(graphics);
-        world.renderLayer2(graphics);
-        world.renderLayer3(graphics);
-        world.renderPlayer(graphics, player);
-        world.renderLayer5(graphics);
-        world.renderLayer6(graphics);
-        if(Main.debug){
-            world.renderCollisionBoxes(graphics);
-            world.renderBlockBoundingBoxes(graphics);
-            player.renderCollisionBoxes(graphics);
-            renderDebugOverlay(graphics);
+        if(Main.guiHandler.isActive()){
+            Main.guiHandler.renderGui(graphics);
+        } else {
+            world.renderWorld(graphics);
+            world.renderHoleWorld(graphics, player);
+            if(Main.debug) renderDebug(player, graphics);
         }
+
         bufferStrategy.show();
     }
 
-    private void renderDebugOverlay(Graphics graphics){
+    public void renderDebug(EntityPlayer player, Graphics graphics){
+        player.getPosition().getWorld().renderCollisionBoxes(graphics);
+        player.getPosition().getWorld().renderBlockBoundingBoxes(graphics);
+        player.renderCollisionBoxes(graphics);
+        renderDebugOverlay(player, graphics);
+    }
+
+    private void renderDebugOverlay(EntityPlayer player, Graphics graphics){
         graphics.setColor(Color.BLACK);
         graphics.drawString("FPS:" + Main.fps + " TPS:" + Main.tps, 2, 12);
         graphics.drawString("Player Position: " + player.getPosition(), 2, 22);

@@ -66,7 +66,6 @@ public class WriteStream extends ObjectOutputStream {
         try {
             this.writeInt(i);
         } catch (IOException e) {
-            System.out.println("Error while saving:" + i);
         }
         return this;
     }
@@ -75,7 +74,6 @@ public class WriteStream extends ObjectOutputStream {
         try {
             this.writeDouble(d);
         } catch (IOException e) {
-            System.out.println("Error while saving:" + d);
         }
         return this;
     }
@@ -85,28 +83,10 @@ public class WriteStream extends ObjectOutputStream {
         return this;
     }
 
-    public WriteStream saveString(String s){
-        List<String> list = new ArrayList<>();
-        list.add(s);
-        saveObject(list);
-        System.out.println(list.toString());
-        /*
-        for(byte b : stringToBin(s)){
-            //System.out.println((char)b + ": " + binToBINString(b));
-        }
-        System.out.println("-----");
-
-        this.writeBytes(binToBINString(stringToBin(s)));
-        */
-
-        return this;
-    }
-
     public WriteStream saveObject(Object o){
         try {
             writeObject(o);
         } catch (IOException e) {
-            System.out.println("Error while saving:" + o);
             e.printStackTrace();
         }
         return this;
