@@ -45,19 +45,28 @@ public class ImageUtil {
     }
 
     public static void drawImageScaledTo(Graphics graphics, int key, BufferedImage image, Position pos, float width, float height){
-        if(imageMap.containsKey(key)){
-            drawImage(graphics, imageMap.get(key), pos);
-        } else {
-            int w = image.getWidth();
-            int h = image.getHeight();
-            BufferedImage after = new BufferedImage(Math.round(width), Math.round(height), BufferedImage.TYPE_INT_ARGB);
-            AffineTransform at = new AffineTransform();
-            at.scale(width/w, height/h);
-            AffineTransformOp scaleOp = new AffineTransformOp(at, AffineTransformOp.TYPE_BILINEAR);
-            after = scaleOp.filter(image, after);
-            drawImage(graphics, after, pos);
-            addToImageMap(key, after);
+        try{
+            if(imageMap.containsKey(key)){
+                drawImage(graphics, imageMap.get(key), pos);
+            } else {
+                int w = image.getWidth();
+                int h = image.getHeight();
+                BufferedImage after = new BufferedImage(Math.round(width), Math.round(height), BufferedImage.TYPE_INT_ARGB);
+                AffineTransform at = new AffineTransform();
+                at.scale(width/w, height/h);
+                AffineTransformOp scaleOp = new AffineTransformOp(at, AffineTransformOp.TYPE_BILINEAR);
+                after = scaleOp.filter(image, after);
+                drawImage(graphics, after, pos);
+                addToImageMap(key, after);
+            }
+        } catch (Exception e){
+            deleteKeys();
         }
+
+    }
+
+    private static void deleteKeys(){
+        imageMap.clear();
     }
 
 }

@@ -24,9 +24,10 @@ public class GuiInfoOverlay extends Gui {
             this.currentBlock = block;
             this.width = width;
             this.height = height;
-            buttons.add(new GuiTextButton((int)position.getX() + 2, (int)position.getY() + 22, 10, 10, "+", "Block Width:" + block.width){
+            buttons.add(new GuiTextButton((int)position.getX() + block.width, (int)position.getY() + 22, 10, 10, "+", "Block Width:" + block.width){
                 @Override
                 public boolean onClicked(Position position) {
+                    System.out.println("");
                     currentBlock.width++;
                     return true;
                 }
@@ -50,12 +51,10 @@ public class GuiInfoOverlay extends Gui {
         graphics.fillRect(x, y, width, height);
         graphics.setColor(Color.BLACK);
         graphics.drawString(currentBlock.registryName, x + 2, y + 12);
-        //graphics.drawString("Block Width:" + currentBlock.width, x + 2, y + 22);
     }
 
     public boolean onMousePress(Position position) {
-        for (GuiButton button : this.buttons) {
-            System.out.println(position.getX() + " " + button.x);
+        for (GuiTextButton button : this.buttons) {
             if (position.getX() >= button.x && position.getX() <= button.x + button.width) {
                 if (position.getY() >= button.y && position.getY() <= button.y + button.height) {
                     button.onClicked(position);

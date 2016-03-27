@@ -3,6 +3,7 @@ package de.canitzp.vismin.world;
 import de.canitzp.vismin.Main;
 import de.canitzp.vismin.blocks.Block;
 import de.canitzp.vismin.blocks.BlockRegistry;
+import de.canitzp.vismin.blocks.BlockTeleporter;
 import de.canitzp.vismin.entity.Entity;
 import de.canitzp.vismin.entity.EntityPlayer;
 import de.canitzp.vismin.renderer.Images;
@@ -44,8 +45,7 @@ public class World implements Serializable{
         this.addCollisionAt(new Position(-1, 0), 1, height);
         this.addCollisionAt(new Position(0, height - 1), width, 1);
         this.addCollisionAt(new Position(width - 1, 0), 1, height);
-        this.addBlockToWorld(new Position(100, 100), BlockRegistry.tree1);
-        this.addBlockToWorld(new Position(100, 200), BlockRegistry.telepad);
+        addBlockToWorld(new Position(100, 100), new BlockTeleporter(BlockRegistry.telepad));
     }
 
     public World setBackground(Images.ImageEnum resource){
@@ -71,6 +71,12 @@ public class World implements Serializable{
     }
 
     public void readSavedWorld(ReadStream read){
+        blockList.clear();
+        collisionList.clear();
+        this.addCollisionAt(new Position(0, -1), width, 1);
+        this.addCollisionAt(new Position(-1, 0), 1, height);
+        this.addCollisionAt(new Position(0, height - 1), width, 1);
+        this.addCollisionAt(new Position(width - 1, 0), 1, height);
         uniqueWorldIdentifier = (String) read.getObject();
         width = read.getInteger();
         height = read.getInteger();
@@ -78,7 +84,8 @@ public class World implements Serializable{
         Map<String, Object> map = (Map<String, Object>) read.getObject();
         while(map != null && map.containsKey("MAP") && map.containsValue("BLOCK")){
             Block block = Block.getBlockFromMap(map);
-            this.addBlockToWorld(block.position, block);
+            blockList.add(block);
+            collisionList.add(block.collisionMapping());
             map = (Map<String, Object>) read.getObject();
         }
     }
@@ -143,7 +150,9 @@ public class World implements Serializable{
         this.collisionList.add(new CollisionBox(fromPos, width, height));
     }
     public void addCollisionAt(CollisionBox box){
-        this.collisionList.add(box);
+        if(box != null){
+            this.collisionList.add(box);
+        }
     }
 
     public boolean isCollision(CollisionBox box2){
@@ -191,9 +200,8 @@ public class World implements Serializable{
     public void addBlockToWorld(Position position, Block block){
         if(block != null){
             block.setPosition(position);
-            Block b = block.cloneBlock();
-            this.addCollisionAt(b.collisionMapping());
-            this.blockList.add(b);
+            addCollisionAt(block.collisionMapping());
+            blockList.add(block);
         }
     }
 
@@ -217,9 +225,11 @@ public class World implements Serializable{
 
     public Block getBlockAtPosition(Position position){
         for(Block block : this.blockList){
-            if(position.getX() >= block.position.getX() && position.getX() <= block.position.getX() + block.width){
-                if(position.getY() >= block.position.getY() && position.getY() <= block.position.getY() + block.height){
-                    return block;
+            if(block != null){
+                if(position.getX() >= block.position.getX() && position.getX() <= block.position.getX() + block.width){
+                    if(position.getY() >= block.position.getY() && position.getY() <= block.position.getY() + block.height){
+                        return block;
+                    }
                 }
             }
         }
@@ -227,10 +237,12 @@ public class World implements Serializable{
     }
 
     public CollisionBox getCollisionBoxAtPosition(Position position){
-        for(CollisionBox block : this.collisionList){
-            if(position.getX() >= block.getFrom().getX() && position.getX() <= block.getFrom().getX() + block.width){
-                if(position.getY() >= block.getFrom().getY() && position.getY() <= block.getFrom().getY() + block.height){
-                    return block;
+        for(CollisionBox box : this.collisionList){
+            if(box != null){
+                if(position.getX() >= box.getFrom().getX() && position.getX() <= box.getFrom().getX() + box.width){
+                    if(position.getY() >= box.getFrom().getY() && position.getY() <= box.getFrom().getY() + box.height){
+                        return box;
+                    }
                 }
             }
         }

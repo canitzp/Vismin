@@ -5,6 +5,7 @@ import de.canitzp.vismin.util.Mouse;
 import de.canitzp.vismin.util.Position;
 
 import java.awt.*;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 
 /**
@@ -49,5 +50,11 @@ public class Gui{
     public void onMouseReleased(MouseEvent event){}
 
     public void onMouseMove(MouseEvent event){}
+
+    public void onKeyboardPressed(KeyEvent event){}
+
+    public void onKeyboardReleased(KeyEvent event){}
+
+
 
 }

@@ -23,10 +23,10 @@ public class Block implements ISaveable{
 
     public Position position;
     public int width, height;
-    public String registryName;
+    public String registryName = "defaultBlock";
     public RenderLayer layer;
     private CollisionBox collisionBox;
-    private int key;
+    public int key;
     private ResourceLocation location;
     private BufferedImage image;
 
@@ -41,16 +41,36 @@ public class Block implements ISaveable{
         setLocation(Images.ImageEnum.TREE1);
     }
 
+    public Block(Block block) {
+        this.width = block.width;
+        this.height = block.height;
+        this.layer = block.layer;
+        this.key = block.key;
+        this.collisionBox = block.collisionMapping();
+        setLocation(block.getLocation() != null ? block.getLocation() : Images.ImageEnum.TREE1.getBlockImage());
+    }
+
     @Override
     public String toString() {
         return "Width:" + width + " Height:" + height + " RegistryName:" + registryName + " ResourceLocation:" + location + " " + position.toString();
     }
 
     public void renderBlock(Graphics graphics){
-        ImageUtil.drawImageScaledTo(graphics, key, image, position, width, height);
+        if(image != null){
+            ImageUtil.drawImageScaledTo(graphics, key, image, position, width, height);
+        }
     }
     public void renderBlock(Graphics graphics, Position position){
         ImageUtil.drawImageScaledTo(graphics, key, image, position, width, height);
+    }
+    public void renderLines(Graphics graphics, Color color, Position offset){
+        graphics.setColor(color);
+        int x = (int) ((int) position.getX() + offset.getX());
+        int y = (int) ((int) position.getY() + offset.getY());
+        graphics.drawLine(x, y, x + width, y);
+        graphics.drawLine(x, y + height, x + width, y + height);
+        graphics.drawLine(x + width, y, x + width, y + height);
+        graphics.drawLine(x, y, x, y + height);
     }
 
     public ResourceLocation getLocation() {
@@ -68,7 +88,11 @@ public class Block implements ISaveable{
     }
 
     public Block setCollisionBox(CollisionBox collisionBox){
-        if(collisionBox != null) this.collisionBox = collisionBox.cloneCollisionBox();
+        if(collisionBox != null){
+            this.collisionBox = collisionBox.cloneCollisionBox();
+        } else {
+            this.collisionBox = null;
+        }
         return this;
     }
 
@@ -87,7 +111,7 @@ public class Block implements ISaveable{
     }
 
     public Block setPosition(Position position){
-        if(this.collisionMapping() != null){
+        if(this.collisionBox != null){
             this.collisionBox.setPosition(position);
         }
         this.position = position;
@@ -123,20 +147,19 @@ public class Block implements ISaveable{
 
     public static Block getBlockFromMap(Map<String, Object> map){
         Block block = new Block();
-        block.position = (Position) map.get("Position");
+        block.setPosition((Position) map.get("Position"));
         block.width = (int) map.get("width");
         block.height = (int) map.get("height");
         block.registryName = (String) map.get("RegistryName");
         block.layer = (RenderLayer) map.get("RenderLayer");
-        block.collisionBox = (CollisionBox) map.get("CollisionBox");
-        block.location = (ResourceLocation) map.get("ResourceLocation");
+        block.setCollisionBox((CollisionBox) map.get("CollisionBox"));
+        block.setLocation((ResourceLocation) map.get("ResourceLocation")).setNewRenderKey();
         return block;
     }
 
     public Block cloneBlock(){
-        return new Block(width, height, layer).setRegistryName(registryName).setPosition(position).setLocation(getLocation()).setCollisionBox(collisionMapping()).setNewRenderKey();
+        return new Block(width, height, layer).setRegistryName(registryName).setPosition(position).setLocation(location).setCollisionBox(collisionBox).setNewRenderKey();
     }
-
 
     public enum RenderLayer{
         LAYER2,
@@ -144,5 +167,4 @@ public class Block implements ISaveable{
         LAYER5,
         LAYER6;
     }
-
 }
